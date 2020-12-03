@@ -1,21 +1,28 @@
 import argparse
+import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import requests
 
+import remote
+from cache import Cache
+
+response_cache = Cache()
 
 class GetHTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.log_request()
 
-        try:
-            resp = requests.get('http://' + self.server.origin + self.path)
-        except Exception as e:
-            self.log_error('Error: %s', e)
-            status_code = 500
-            content = ''
+        if response_cache.has(self.path):
+            self.log_message('using cache for path: %s', self.path)
+            status_code, content, error = response_cache.get(self.path)
         else:
-            status_code = resp.status_code
-            content = resp.content
+            self.log_message('requesting from origin for path: %s', self.path)
+            status_code, content, error = remote.get(self.server.origin, self.path)
+            if error is None:
+                value = status_code, content, error
+                response_cache.set(self.path, value)
+
+        if error:
+            self.log_error('Error: %s', error)
 
         if hasattr(content, 'encode'):
             content = content.encode()
@@ -26,7 +33,7 @@ class GetHTTPHandler(BaseHTTPRequestHandler):
 
 
 def main(args):
-    print('Starting server on port %d' % args.port)
+    print('Starting server on port %d in thread %d' % (args.port, os.getpid()))
 
     server = HTTPServer(('', args.port), GetHTTPHandler)
     server.origin = args.origin
