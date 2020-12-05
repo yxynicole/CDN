@@ -121,7 +121,7 @@ def start_dns_server(ip, port):
         print("received data")
         dns_packet = DNSPacket()
         dns_packet.intake_question(data)
-        dns_answer = dns_packet.form_answer('124.5.123.43') #hardcoded random IP address for now
+        dns_answer = dns_packet.form_answer('34.238.192.84') #hardcoded virgina ec2 server
         print("about to send dns response")
         s.sendto(dns_answer, addr)
 
