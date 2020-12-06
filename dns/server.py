@@ -4,6 +4,16 @@ import struct
 from socket import inet_aton
 import resolver
 
+def get_sender_IP_address():
+    '''
+    Returns the ip address of the local machine
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("www.google.com", 80))
+    ip_addr = s.getsockname()[0]
+    s.close()
+    return ip_addr
+
 parser = argparse.ArgumentParser('dnsserver')
 
 parser.add_argument('-p', dest='port', required=True, type=int)
@@ -108,7 +118,7 @@ if __name__ == "__main__":
 
     resolver.set_domain(args.name)
 
-    server = socketserver.UDPServer(('localhost', args.port), UDPHandler)
+    server = socketserver.UDPServer((get_sender_IP_address(), args.port), UDPHandler)
 
     try:
         print('Starting server on port %d' % args.port)
