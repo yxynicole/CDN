@@ -1,7 +1,7 @@
 import socketserver
 import argparse
 import struct
-import inet_aton
+import socket
 import resolver
 
 def get_sender_IP_address():
