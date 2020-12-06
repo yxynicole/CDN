@@ -1,6 +1,7 @@
 import socketserver
 import argparse
 import struct
+from socket import inet_aton
 import socket
 import resolver
 
