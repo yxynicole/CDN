@@ -5,6 +5,7 @@ import socket
 
 import remote
 from cache import Cache
+import utils
 
 response_cache = Cache()
 
@@ -63,5 +64,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-p', dest='port', required=True, type=int)
     parser.add_argument('-o', dest='origin', required=True)
+
+    utils.handle_term() # handle signal gracefully
 
     main(parser.parse_args())

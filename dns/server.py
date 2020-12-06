@@ -4,21 +4,8 @@ import struct
 from socket import inet_aton
 import socket
 import resolver
+import utils
 
-def get_sender_IP_address():
-    '''
-    Returns the ip address of the local machine
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("www.google.com", 80))
-    ip_addr = s.getsockname()[0]
-    s.close()
-    return ip_addr
-
-parser = argparse.ArgumentParser('dnsserver')
-
-parser.add_argument('-p', dest='port', required=True, type=int)
-parser.add_argument('-n', dest='name', required=True)
 
 class Buffer:
     def __init__(self, data):
@@ -114,17 +101,26 @@ class UDPHandler(socketserver.BaseRequestHandler):
         socket.sendto(dns_packet.pack(), self.client_address)
 
 
-if __name__ == "__main__":
-    args = parser.parse_args()
+def main(args):
 
     resolver.set_domain(args.name)
 
-    server = socketserver.UDPServer((get_sender_IP_address(), args.port), UDPHandler)
-
+    server = socketserver.UDPServer(('localhost', args.port), UDPHandler)
     try:
         print('Starting server on port %d' % args.port)
         server.serve_forever()
     except KeyboardInterrupt:
-        print('Teminated from keyboard')
+        pass
     finally:
+        print('Shutting down the server')
         server.shutdown()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser('dnsserver')
+
+    parser.add_argument('-p', dest='port', required=True, type=int)
+    parser.add_argument('-n', dest='name', required=True)
+
+    utils.handle_term() # gracefully handle term signal
+
+    main(parser.parse_args())
