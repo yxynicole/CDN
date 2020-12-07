@@ -25,4 +25,4 @@ do
     deploy_to ${fields[0]} 
 done
 
-echo "Deployment is done"
+echo "All deployments are done"

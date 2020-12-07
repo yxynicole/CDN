@@ -18,6 +18,14 @@ def handle_term():
 
 
 class GetHTTPHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        # override to standard output
+        sys.stdout.write("%s - - [%s] %s\n" %
+                         (self.address_string(),
+                          self.log_date_time_string(),
+                          format%args))
+        sys.stdout.flush()
+
     def do_GET(self):
         self.log_request()
 
@@ -53,13 +61,16 @@ def main():
     args = parser.parse_args()
 
     handle_term() # handle signal gracefully
-    print('Starting server on port %d in thread %d' % (args.port, os.getpid()))
 
     server = HTTPServer(('', args.port), GetHTTPHandler)
     server.origin = args.origin
     try:
+        print('Starting server on port %d' % args.port)
+        sys.stdout.flush()
         server.serve_forever()
     except KeyboardInterrupt:
-        print('Teminated from keyboard')
+        pass
     finally:
+        print('Shutting down the server')
+        sys.stdout.flush()
         server.shutdown()
