@@ -2,9 +2,16 @@ import socketserver
 import argparse
 import struct
 from socket import inet_aton
-import socket
-import resolver
-import utils
+import signal, sys
+
+from cs5700dns import resolver
+
+
+def handle_term():
+    def handle(sig, frame):
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, handle)
 
 
 class Buffer:
@@ -101,11 +108,18 @@ class UDPHandler(socketserver.BaseRequestHandler):
         socket.sendto(dns_packet.pack(), self.client_address)
 
 
-def main(args):
+def main():
+    parser = argparse.ArgumentParser('dnsserver')
+
+    parser.add_argument('-p', dest='port', required=True, type=int)
+    parser.add_argument('-n', dest='name', required=True)
+
+    args = parser.parse_args()
 
     resolver.set_domain(args.name)
 
     server = socketserver.UDPServer(('localhost', args.port), UDPHandler)
+    handle_term()
     try:
         print('Starting server on port %d' % args.port)
         server.serve_forever()
@@ -116,11 +130,4 @@ def main(args):
         server.shutdown()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('dnsserver')
-
-    parser.add_argument('-p', dest='port', required=True, type=int)
-    parser.add_argument('-n', dest='name', required=True)
-
-    utils.handle_term() # gracefully handle term signal
-
-    main(parser.parse_args())
+    main()

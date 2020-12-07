@@ -3,7 +3,7 @@
 open first terminal and run
 
 ```python
-python3 dns/server.py -p 8080 -n xyz.com
+python3 cs5700dns/server.py -p 8080 -n xyz.com
 ```
 
 

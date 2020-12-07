@@ -1,0 +1,1 @@
+pkill -f httpserver && echo "http stopped" || echo "http not running" 
