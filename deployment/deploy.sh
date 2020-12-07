@@ -12,3 +12,4 @@ done
 
 ssh -i $keyfile $username@$target "rm -rf ~/CDN && mkdir -p ~/CDN"
 scp -i $keyfile -r [!.]* $username@$target:~/CDN/
+ssh -i $keyfile $username@$target "cd CDN && make"

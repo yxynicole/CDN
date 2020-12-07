@@ -63,6 +63,3 @@ def main():
         print('Teminated from keyboard')
     finally:
         server.shutdown()
-
-if __name__ == '__main__':
-    main()

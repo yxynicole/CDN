@@ -1,9 +1,18 @@
-mkdir -p log
+while getopts p:n: flag
+do
+    case "${flag}" in
+        p) port=${OPTARG};;
+        n) name=${OPTARG};;
+    esac
+done
 
-if pgrep -f dnsserver &> /dev/null ; then 
+mkdir -p ~/log
+
+if pgrep -u $UID -f dnsserver &> /dev/null ; then 
     echo "dns started already"
+    pgrep -u $UID -f dnsserver | xargs ps -up
 else
-    nohup ./dnsserver -p 8080 -n www.google.com &> log/dns.log &
+    nohup ./dnsserver -p $port -n $name >> ~/log/dns.log 2>&1 &
     sleep 3
-    pgrep -f dnsserver &> /dev/null && echo "dns started" || echo "dns failed to start"
+    pgrep -u $UID -f dnsserver &> /dev/null && echo "dns started" || echo "dns failed to start"
 fi

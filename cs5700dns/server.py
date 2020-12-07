@@ -100,9 +100,11 @@ class UDPHandler(socketserver.BaseRequestHandler):
         replica_addr = resolver.resolve(domain_received, self.client_address)
         if replica_addr:
             print('domain matches -', domain_received, '- replica address -', replica_addr)
+            sys.stdout.flush()
             dns_packet.answer(inet_aton(replica_addr))
         else:
             print('unmatched domain -', domain_received)
+            sys.stdout.flush()
             dns_packet.reject()
 
         socket.sendto(dns_packet.pack(), self.client_address)
@@ -118,15 +120,17 @@ def main():
 
     resolver.set_domain(args.name)
 
-    server = socketserver.UDPServer(('localhost', args.port), UDPHandler)
+    server = socketserver.UDPServer(('0.0.0.0', args.port), UDPHandler)
     handle_term()
     try:
         print('Starting server on port %d' % args.port)
+        sys.stdout.flush()
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
         print('Shutting down the server')
+        sys.stdout.flush()
         server.shutdown()
 
 if __name__ == "__main__":

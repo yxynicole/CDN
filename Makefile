@@ -1,3 +1,3 @@
 all: 
-		chmod +x httpserver
-		chmod +x dnsserver
+		chmod +x httpserver dnsserver
+		chmod +x deployCDN runCDN stopCDN

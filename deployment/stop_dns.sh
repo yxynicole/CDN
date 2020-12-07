@@ -1,1 +1,1 @@
-pkill -f dnsserver && echo "dns stopped" || echo "dns not running" 
+pkill -u $UID -f "dnsserver" && echo "dns stopped" || echo "dns not running" 
