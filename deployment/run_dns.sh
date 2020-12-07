@@ -5,5 +5,5 @@ if pgrep -f dnsserver &> /dev/null ; then
 else
     nohup ./dnsserver -p 8080 -n www.google.com &> log/dns.log &
     sleep 3
-    pgrep -f dnsserver && echo "dns started" || echo "dns failed to start"
+    pgrep -f dnsserver &> /dev/null && echo "dns started" || echo "dns failed to start"
 fi
