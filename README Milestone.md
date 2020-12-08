@@ -7,7 +7,9 @@ HTTP Server:  We use an HTTPServer that we initiate on the replica server.  The 
 
 Cache:  We place the popular_sites.csv file on the replica server.  When the httpserver code is initiated, the top 10 pieces of content are read from the csv file.  We make get requests to the origin server for this content and store the path:html in a dictionary in our custom Cache class.  This is just a preliminary strategy and we will eventually expand our cache to include as much content as the memory restrctions allow.
 
-### Performance Optimization
+Note:  We have manually placed the csv file on the server to allow our cache to populate.  We still need to make this part of our deployment process. 
+
+### High Level Approach
 Since we know the popular content ahead of time, we fetch the popular content from the origin server and cache even before any client requests it.  This will allow us to immediately server the popular content from cache when the requests start coming in.  For cache, we think RAM will be faster than reading from disk so we will try to use RAM when possible.  
 
 While not implemented as part of milestone 1 code yet, we will be doing active measurement in order to determine the best replica server to map clients to.  Based on the clients IP address, we will determine which replica server has the lowest latency to reach the client.
