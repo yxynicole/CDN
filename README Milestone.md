@@ -9,12 +9,12 @@ Cache:  We place the popular_sites.csv file on the replica server.  When the htt
 
 Note:  We have manually placed the csv file on the server to allow our cache to populate.  We still need to make this part of our deployment process. 
 
-### High Level Approach
+### Performance Optimization
 Since we know the popular content ahead of time, we fetch the popular content from the origin server and cache even before any client requests it.  This will allow us to immediately server the popular content from cache when the requests start coming in.  For cache, we think RAM will be faster than reading from disk so we will try to use RAM when possible.  
 
 While not implemented as part of milestone 1 code yet, we will be doing active measurement in order to determine the best replica server to map clients to.  Based on the clients IP address, we will determine which replica server has the lowest latency to reach the client.
 
-### Performance Optimization
+### Challenges
 Getting our working environment setup (understanding and accessing the different servers) took a little longer than anticipated.  Also creating a well-formed DNS response took several tries to get working
 
 ### Code Breakdown
