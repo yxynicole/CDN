@@ -1,24 +1,31 @@
 import argparse
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import socket
+import signal, sys
 
-import remote
-from cache import Cache
+from cs5700http import remote
+from cs5700http.cache import Cache
+
 
 response_cache = Cache()
 
-def get_sender_IP_address():
-    '''
-    Returns the ip address of the local machine
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("www.google.com", 80))
-    ip_addr = s.getsockname()[0]
-    s.close()
-    return ip_addr
+
+def handle_term():
+    def handle(sig, frame):
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, handle)
+
 
 class GetHTTPHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        # override to standard output
+        sys.stdout.write("%s - - [%s] %s\n" %
+                         (self.address_string(),
+                          self.log_date_time_string(),
+                          format%args))
+        sys.stdout.flush()
+
     def do_GET(self):
         self.log_request()
 
@@ -45,23 +52,25 @@ class GetHTTPHandler(BaseHTTPRequestHandler):
         self.wfile.write(content)
 
 
-def main(args):
-    print('Starting server on port %d in thread %d' % (args.port, os.getpid()))
-    print(get_sender_IP_address())
-
-    server = HTTPServer(('', args.port), GetHTTPHandler)
-    server.origin = args.origin
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print('Teminated from keyboard')
-    finally:
-        server.shutdown()
-
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser('httpserver')
 
     parser.add_argument('-p', dest='port', required=True, type=int)
     parser.add_argument('-o', dest='origin', required=True)
 
-    main(parser.parse_args())
+    args = parser.parse_args()
+
+    handle_term() # handle signal gracefully
+
+    server = HTTPServer(('', args.port), GetHTTPHandler)
+    server.origin = args.origin
+    try:
+        print('Starting server on port %d' % args.port)
+        sys.stdout.flush()
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print('Shutting down the server')
+        sys.stdout.flush()
+        server.shutdown()

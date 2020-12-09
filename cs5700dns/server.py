@@ -2,23 +2,17 @@ import socketserver
 import argparse
 import struct
 from socket import inet_aton
-import socket
-import resolver
+import signal, sys
 
-def get_sender_IP_address():
-    '''
-    Returns the ip address of the local machine
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("www.google.com", 80))
-    ip_addr = s.getsockname()[0]
-    s.close()
-    return ip_addr
+from cs5700dns import resolver
 
-parser = argparse.ArgumentParser('dnsserver')
 
-parser.add_argument('-p', dest='port', required=True, type=int)
-parser.add_argument('-n', dest='name', required=True)
+def handle_term():
+    def handle(sig, frame):
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, handle)
+
 
 class Buffer:
     def __init__(self, data):
@@ -106,25 +100,38 @@ class UDPHandler(socketserver.BaseRequestHandler):
         replica_addr = resolver.resolve(domain_received, self.client_address)
         if replica_addr:
             print('domain matches -', domain_received, '- replica address -', replica_addr)
+            sys.stdout.flush()
             dns_packet.answer(inet_aton(replica_addr))
         else:
             print('unmatched domain -', domain_received)
+            sys.stdout.flush()
             dns_packet.reject()
 
         socket.sendto(dns_packet.pack(), self.client_address)
 
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser('dnsserver')
+
+    parser.add_argument('-p', dest='port', required=True, type=int)
+    parser.add_argument('-n', dest='name', required=True)
+
     args = parser.parse_args()
 
     resolver.set_domain(args.name)
 
-    server = socketserver.UDPServer((get_sender_IP_address(), args.port), UDPHandler)
-
+    server = socketserver.UDPServer(('0.0.0.0', args.port), UDPHandler)
+    handle_term()
     try:
         print('Starting server on port %d' % args.port)
+        sys.stdout.flush()
         server.serve_forever()
     except KeyboardInterrupt:
-        print('Teminated from keyboard')
+        pass
     finally:
+        print('Shutting down the server')
+        sys.stdout.flush()
         server.shutdown()
+
+if __name__ == "__main__":
+    main()

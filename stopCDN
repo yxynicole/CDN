@@ -1,0 +1,25 @@
+while getopts p:o:n:u:i: flag
+do
+    case "${flag}" in
+        p) port=${OPTARG};;
+        o) origin=${OPTARG};;
+        n) name=${OPTARG};;
+        u) username=${OPTARG};;
+        i) keyfile=${OPTARG};;
+    esac
+done
+
+target=cs5700cdnproject.ccs.neu.edu
+
+echo "stop dns service on $target"
+ssh -oStrictHostKeyChecking=no -i $keyfile $username@$target "cd CDN && bash deployment/stop_dns.sh"
+echo "===="
+
+cat deployment/replicas.txt | while read line
+do
+    read -ra fields -d ' ' <<<"$line"
+    target=${fields[0]} 
+    echo "stop http service on $target"
+    ssh -oStrictHostKeyChecking=no -n -i $keyfile $username@$target "cd CDN && bash deployment/stop_http.sh"
+    echo "----"
+done

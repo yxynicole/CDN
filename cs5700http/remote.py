@@ -2,9 +2,8 @@ import requests
 
 def get(host, path):
     try:
-        # url = 'http://' + host + path
-        # print("about to try " + url)
-        resp = requests.get('http://' + host + path)
+        # hard code to 8080 per requirement
+        resp = requests.get('http://' + host + ':8080' + path)
     except Exception as e:
         status_code = 500
         content = ''

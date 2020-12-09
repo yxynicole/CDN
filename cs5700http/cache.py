@@ -1,7 +1,7 @@
 # import psutil
 
-import csv
-import remote
+import csv, os
+from cs5700http import remote
 
 POPULATIRY_FILE = "popular_sites.csv"
 ORIGIN_SERVER = 'ec2-18-207-254-152.compute-1.amazonaws.com:8080'
@@ -18,6 +18,8 @@ class Cache:
         Reads from the popular_sites.csv and poulates the popular_sites array
         Each array element containts [path, num visits]
         '''
+        if not os.path.exists(POPULATIRY_FILE):
+            return
 
         with open(POPULATIRY_FILE, 'r') as file:
             reader = csv.reader(file)
@@ -27,14 +29,12 @@ class Cache:
                 self.popular_sites.append([row[0][24:], int(row[1])]) #Gets starting at /wiki
     
     def populate_cache(self, origin_server):
-        for i in range(10):
-            status_code, content, error = remote.get(ORIGIN_SERVER, self.popular_sites[i][0])
+        for site in self.popular_sites[:10]:
+            status_code, content, error = remote.get(ORIGIN_SERVER, site[0])
             if error is None:
-                self.entries[self.popular_sites[i][0]] = content
+                self.entries[site[0]] = content
             else:
                 print("not running")
-                break
-        print("yayyy")
         # print(self.entries['/wiki/Patrick_Mahomes'])
 
 

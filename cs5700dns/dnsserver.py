@@ -125,13 +125,13 @@ def start_dns_server(ip, port):
         print("about to send dns response")
         s.sendto(dns_answer, addr)
 
-def main(args):
-    ip = get_sender_IP_address()
-    start_dns_server(ip, args.port)
-
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', '-p', type=int, required=True)
     parser.add_argument('--name', '-n', required=True) # Not sure why we need this? Not using it as of yet
     args = parser.parse_args()
-    main(args)
+    ip = get_sender_IP_address()
+    start_dns_server(ip, args.port)
+
+if __name__ == '__main__':
+    main()

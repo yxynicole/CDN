@@ -1,0 +1,28 @@
+while getopts p:o:n:u:i: flag
+do
+    case "${flag}" in
+        p) port=${OPTARG};;
+        o) origin=${OPTARG};;
+        n) name=${OPTARG};;
+        u) username=${OPTARG};;
+        i) keyfile=${OPTARG};;
+    esac
+done
+
+deploy_to () {
+    target=$1
+    echo "deploying to $target"
+    ssh -n -oStrictHostKeyChecking=no -i $keyfile $username@$target "rm -rf ~/CDN && mkdir -p ~/CDN"
+    scp -i $keyfile -r [!.]* $username@$target:~/CDN/
+    ssh -n -oStrictHostKeyChecking=no -i $keyfile $username@$target "cd CDN && make" && echo "deployment to $target is done"
+}
+
+deploy_to cs5700cdnproject.ccs.neu.edu
+
+cat deployment/replicas.txt | while read line
+do
+    read -ra fields -d ' ' <<<"$line"
+    deploy_to ${fields[0]} 
+done
+
+echo "All deployments are done"
