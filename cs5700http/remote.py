@@ -1,9 +1,18 @@
 import requests
 
-def get(host, path):
+config = {
+    'origin': None
+}
+
+def set_origin(origin):
+    config['origin'] = origin
+
+def get(path):
     try:
         # hard code to 8080 per requirement
-        resp = requests.get('http://' + host + ':8080' + path)
+        url = 'http://' + config['origin'] + ':8080' + path
+        print('GET - URL:', url)
+        resp = requests.get(url)
     except Exception as e:
         status_code = 500
         content = ''

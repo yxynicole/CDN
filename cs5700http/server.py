@@ -2,6 +2,7 @@ import argparse
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import signal, sys
+import threading
 
 from cs5700http import remote
 from cs5700http.cache import Cache
@@ -36,7 +37,7 @@ class GetHTTPHandler(BaseHTTPRequestHandler):
             error = None
         else:
             self.log_message('requesting from origin for path: %s', self.path)
-            status_code, content, error = remote.get(self.server.origin, self.path)
+            status_code, content, error = remote.get(self.path)
             if error is None:
                 value = status_code, content, error
                 # response_cache.set(self.path, value)
@@ -60,10 +61,14 @@ def main():
 
     args = parser.parse_args()
 
+    remote.set_origin(args.origin)
+
+    thread = threading.Thread(target=response_cache.read_popularity_file_and_pupulate_cache, daemon=True)
+    thread.start()
+
     handle_term() # handle signal gracefully
 
     server = HTTPServer(('', args.port), GetHTTPHandler)
-    server.origin = args.origin
     try:
         print('Starting server on port %d' % args.port)
         sys.stdout.flush()
