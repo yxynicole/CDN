@@ -61,7 +61,7 @@ def get_coordinates(ip):
     # print(calculate_distance(lat, 35.6895, lon, 139.6917))
     return lat, lon, error
 
-def find_closest_replica_server(ip)
+def find_closest_replica_server(ip):
     '''
     Given the an ip address (ip), determines the closest replica server
     Returns the ip address of the closest replica server
