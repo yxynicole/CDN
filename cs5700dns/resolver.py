@@ -57,8 +57,7 @@ def resolve(name, ip):
     if config['domain'] != name:
         return None
     # TODO return IP address based on measurement
-    print(ip)
-    #get_coordinates(ip)
+    get_coordinates(ip)
     return '34.23.192.84'
  
 
