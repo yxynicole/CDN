@@ -1,3 +1,5 @@
+from math import radians, cos, sin, asin, sqrt
+import requests 
 
 config = {
     'domain': None,
@@ -14,10 +16,48 @@ config = {
 def set_domain(name):
     config['domain'] = name
 
+def calculate_distance(lat1, lat2, lon1, lon2):
+    '''
+    Calculated distance in KM between two points on the earth
+    Used calculation from: https://www.geeksforgeeks.org/program-distance-two-points-earth/
+    '''
+    
+    # Converts from degrees to radians
+    lon1 = radians(lon1) 
+    lon2 = radians(lon2) 
+    lat1 = radians(lat1) 
+    lat2 = radians(lat2) 
+       
+    # Haversine formula  
+    dlon = lon2 - lon1  
+    dlat = lat2 - lat1 
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+  
+    c = 2 * asin(sqrt(a))  
+     
+    # Radius of earth in kilometers. 
+    r = 6371
+       
+    # calculate the result 
+    return(c * r)
+
+def get_coordinates(ip):
+    '''
+    Returns the estimated latitude and longtitude of an IP address
+    '''
+    print("Looking up location of ip address: " + ip)
+    ip_api = 'http://ip-api.com/json/' + ip
+    response = requests.get(ip_api).json()
+    lat = response["lat"]
+    lon = response["lon"]
+    print("Lat is" + str(lat) + " and lon is " + str(lon))
+    return lat, lon
+
 def resolve(name, ip):
     if config['domain'] != name:
         return None
     # TODO return IP address based on measurement
+    get_coordinates(ip)
     return '34.23.192.84'
  
 
