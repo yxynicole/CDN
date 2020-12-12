@@ -57,8 +57,8 @@ def get_coordinates(ip):
         print("Error getting coordinates of "+ ip)
         error = "IP Geolocation Error"
     print("For ip " + ip+ ", Lat is " + str(lat) + " and lon is " + str(lon))
-    print(calculate_distance(lat, lon, 37.7749, -122.4194))
-    print(calculate_distance(lat, lon, 35.6895, 139.6917))
+    print(calculate_distance(lat, 37.7749, lon, -122.4194))
+    print(calculate_distance(lat, 35.6895, lon, 139.6917))
     return lat, lon, error
 
 def resolve(name, ip):
