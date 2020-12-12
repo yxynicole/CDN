@@ -44,14 +44,20 @@ def calculate_distance(lat1, lat2, lon1, lon2):
 def get_coordinates(ip):
     '''
     Returns the estimated latitude and longtitude of an IP address
+    Uses the free ip_geo_location server: https://ip-api.com/docs/api:json
     '''
-    print("Looking up location of ip address: " + ip)
-    ip_api = 'http://ip-api.com/json/' + ip
-    response = requests.get(ip_api).json()
-    lat = response["lat"]
-    lon = response["lon"]
-    print("Lat is" + str(lat) + " and lon is " + str(lon))
-    return lat, lon
+    
+    error = None
+    try:
+        ip_api = 'http://ip-api.com/json/' + ip
+        response = requests.get(ip_api).json()
+        lat = response["lat"]
+        lon = response["lon"]
+    except:
+        print("Error getting coordinates of "+ ip)
+        error = "IP Geolocation Error"
+    print("For ip " + ip+ ", Lat is " + str(lat) + " and lon is " + str(lon))
+    return lat, lon, error
 
 def resolve(name, ip):
     if config['domain'] != name:
