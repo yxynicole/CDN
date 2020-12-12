@@ -56,9 +56,6 @@ def get_coordinates(ip):
     except:
         print("Error getting coordinates of "+ ip)
         error = "IP Geolocation Error"
-    # print("For ip " + ip+ ", Lat is " + str(lat) + " and lon is " + str(lon))
-    # print(calculate_distance(lat, 37.7749, lon, -122.4194))
-    # print(calculate_distance(lat, 35.6895, lon, 139.6917))
     return lat, lon, error
 
 def find_closest_replica_server(ip):
@@ -74,11 +71,13 @@ def find_closest_replica_server(ip):
     replicas = config['replicas']
     if error == None:
         for replica_ip in replicas.keys():
-            print("Checking " + replica_ip)
             dist = calculate_distance(lat, replicas[replica_ip][0], lon, replicas[replica_ip][1])
             if dist < min_dist:
                 best_ip = replica_ip
                 min_dist = dist
+    else:
+        return '34.238.192.84' # Returning N. Virgina IP in event of error
+
     
     return best_ip
 
@@ -86,7 +85,6 @@ def find_closest_replica_server(ip):
 def resolve(name, ip):
     if config['domain'] != name:
         return None
-    print("Ip is " + ip)
     return find_closest_replica_server(ip)
  
 
