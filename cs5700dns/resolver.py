@@ -94,6 +94,7 @@ def find_closest_replica_server(ip):
 def resolve(name, ip):
     if config['domain'] != name:
         return None
+    print("Beacon IP is " + ip)
     return find_closest_replica_server(ip)
  
 
