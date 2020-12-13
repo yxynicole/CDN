@@ -70,7 +70,6 @@ def find_closest_replica_server(ip):
     # If the IP address has already been seen, return the previously determined best
     # replica_server
     if ip in seen_ips.keys():
-        print("running")
         return seen_ips.get(ip)
 
     # IP address has not been seen yet, so get coordinates and determine best replica server
