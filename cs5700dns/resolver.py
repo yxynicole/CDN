@@ -13,6 +13,9 @@ config = {
     }
 }
 
+seen_ips = {} # dictionary to map IPs to best replica server
+              # client_ip : best_replica_server_ip  
+
 def set_domain(name):
     config['domain'] = name
 
@@ -64,6 +67,13 @@ def find_closest_replica_server(ip):
     Returns the ip address of the closest replica server
     '''
 
+    # If the IP address has already been seen, return the previously determined best
+    # replica_server
+    if ip in seen_ips.keys():
+        print("running")
+        return seen_ips.get(ip)
+
+    # IP address has not been seen yet, so get coordinates and determine best replica server
     best_ip = ''
     min_dist = 100000000.00  # large min distance to initialize
 
@@ -75,10 +85,10 @@ def find_closest_replica_server(ip):
             if dist < min_dist:
                 best_ip = replica_ip
                 min_dist = dist
+        seen_ips[ip] = best_ip  # add this ip / best_server to the dict of seen IP addresses
     else:
         return '34.238.192.84' # Returning N. Virgina IP in event of error
 
-    
     return best_ip
 
 
