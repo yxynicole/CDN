@@ -31,7 +31,7 @@ Using time wget, we evaluated effectiveness of IP Geolocation vs. randomly picki
 
 1) We would implement active measurement techniques to map clients to the best replica server. For all IP addresses we have seen before, we could ping the replica servers to see which responded the fasted.  We could continually run these pings and we would be able to map clients (that we have seen before) to the replica server likely to respond the fastest. 
 
-2) We would improve our ability to evaluate the effectiveness of our solution through automated simulation testing.  Through the automation, we could configure different versions of the CDN (IP Geolocation vs active measurement), and we could do statistical analysis on the performance metrics assess our solution.
+2) We would improve our ability to evaluate the effectiveness of our solution through automated simulation testing.  Through the automation, we could configure different versions of the CDN (IP Geolocation vs active measurement), and we could do statistical analysis on the performance metrics to assess our solution.
 
 3) We would improve our searching algorithm to find LRU entry. The current version is doing linear search but we could improve it by applying a better algorithm.
 
