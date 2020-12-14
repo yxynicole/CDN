@@ -48,10 +48,10 @@ class Cache:
                         return
 
     def has(self, key):
-        return key in self.entries.keys()
+        return key in self.entries
 
     def get(self, key):
-        entry = self.entries.get(key)
+        entry = self.entries[key]
         entry.refresh()
         return entry.v
 

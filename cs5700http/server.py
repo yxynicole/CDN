@@ -29,7 +29,6 @@ class GetHTTPHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.log_request()
-
         if response_cache.has(self.path):
             self.log_message('using cache for path: %s', self.path)
             content = response_cache.get(self.path)
@@ -39,8 +38,7 @@ class GetHTTPHandler(BaseHTTPRequestHandler):
             self.log_message('requesting from origin for path: %s', self.path)
             status_code, content, error = remote.get(self.path)
             if error is None:
-                value = status_code, content, error
-                # response_cache.set(self.path, value)
+                response_cache.set(self.path, content)
 
         if error:
             self.log_error('Error: %s', error)

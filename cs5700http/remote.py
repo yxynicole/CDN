@@ -13,7 +13,6 @@ def get(path):
     try:
         # hard code to 8080 per requirement
         url = 'http://' + config['origin'] + ':8080' + path
-        print('GET - URL:', url)
         resp = requests.get(url)
     except Exception as e:
         status_code = 500
