@@ -1,7 +1,9 @@
 # import psutil
 
-import sys, csv, os, time, threading
+import sys, csv, os, time, threading, functools
 from cs5700http import remote
+
+print = functools.partial(print, flush=True)
 
 POPULATIRY_FILE = "popular_sites.csv"
 MAX_CACHE_SIZE = 10 * 1024 ** 2  # 10MB

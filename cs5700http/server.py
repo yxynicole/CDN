@@ -1,12 +1,13 @@
 import argparse
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import signal, sys
+import signal, sys, functools
 import threading
 
 from cs5700http import remote
 from cs5700http.cache import Cache
 
+print = functools.partial(print, flush=True)
 
 response_cache = Cache()
 
@@ -21,11 +22,10 @@ def handle_term():
 class GetHTTPHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         # override to standard output
-        sys.stdout.write("%s - - [%s] %s\n" %
+        print("%s - - [%s] %s\n" %
                          (self.address_string(),
                           self.log_date_time_string(),
                           format%args))
-        sys.stdout.flush()
 
     def do_GET(self):
         self.log_request()
@@ -71,11 +71,9 @@ def main():
     server = HTTPServer(('', args.port), GetHTTPHandler)
     try:
         print('Starting server on port %d' % args.port)
-        sys.stdout.flush()
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
         print('Shutting down the server')
-        sys.stdout.flush()
         server.shutdown()

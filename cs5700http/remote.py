@@ -1,4 +1,6 @@
-import requests
+import requests, functools
+
+print = functools.partial(print, flush=True)
 
 config = {
     'origin': None
