@@ -1,0 +1,29 @@
+## Project 5: Roll Your Own CDN
+
+### Project Description
+
+https://david.choffnes.com/classes/cs4700fa20/project5.php
+
+You must implement a CDN using the following features. First, you will use DNS redirection to send clients to the replica server with the fastest response time. Second, you will write a simple Web server that returns content requested by clients. Third, you will implement a system that uses information about network performance, load on servers, and cached data at servers to determine the best replica server. Performance will be measured in terms of how long it takes to download a piece of content. Similar to most Web sites, most content will be small in terms of bytes.
+
+### Design Decisions / High Level Approach
+DNS Server:  We implemented a DNS server that responds with the IP address of the closest replica server based on IP Geolocation.  We used a UDPServer to listen for incoming requests and to respond with an A record.  We did not elect to use any packages to parse the DNS request and to form the response, instead we wrote this parsing and packet forming code ourselves.
+
+HTTP Server:  We use an HTTPServer that we initiate on the replica server.  The server listens for incoming GET requests. If the requested content is cached on the server, we get the content and respond.  If the requested content is not on the replica server, we fetch the content from the origin server and response.  For cache, we have created a custom class that will hold our cache in RAM.  
+
+Cache:  We place the popular_sites.csv file on the replica servers.  When the httpserver code is initiated, we pre-fetch as much popluar content as possible into cache.  We make get requests to the origin server for this content. 
+
+### Performance Optimization
+
+DNS Response: We direct clients to the closest replica server based on the client's location.  For each client DNS request, we determine the client's latitude and longitude based on a free IP Geolocation Service (https://ip-api.com/docs/api:json) and calculate which replica server is the closest to the client.  Although not necessarily guaranteed, the idea is that clients will have the best performance fetching client when they are fetching from the closest replica server.  We keep a list of client IP addresses that we have seen before and the corresponding closest replica server.  For IP addresses that we have seen before, we can respond immediately with the pre-determined best replica server
+
+Cache Startegy / Optimization: XINYU TO ADD (RAM vs Disk, pre-fetch, cache replacement approach)
+
+### Evaluating Performance Optimization Effectiveness
+Getting our working environment setup (understanding and accessing the different servers) took a little longer than anticipated.  Also creating a well-formed DNS response took several tries to get working
+
+### Code Breakdown
+
+DNS Server: We decided to both do separate versions of the DNS Server to start the project.  We both produced working DNS Servers that send back well-formed DNS responses.  We are using Xinyu's version of the DNS server in our submission
+
+HTTP Server:  Server and Remote files (Xinyu).  Cache file (Jeff)
