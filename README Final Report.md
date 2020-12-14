@@ -32,6 +32,12 @@ Using time wget, we evaluated effectiveness of IP Geolocation vs. randomly picki
 
 ### Code Breakdown
 
-DNS Server: We decided to both do separate versions of the DNS Server to start the project.  We both produced working DNS Servers that send back well-formed DNS responses.  We are using Xinyu's version of the DNS server in our submission
+DNS Folder: We decided to both do separate versions of the DNS Server to start the project.  We both produced working DNS Servers that send back well-formed DNS responses.  We are using Xinyu's version of the DNS server in our submission.  
 
-HTTP Server:  Server and Remote files (Xinyu).  Cache file (Jeff)
+IP Geolocation methods: (Jeff)
+
+HTTP Folder:  Server.py, Remote.py, and Cache.py files (Xinyu).  Initial read_popularity_file method (Jeff) with tweaks from (Xinyu)
+
+Deployment Scripts: (Xinyu)
+
+
