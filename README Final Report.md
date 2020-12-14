@@ -20,7 +20,15 @@ DNS Response: We direct clients to the closest replica server based on the clien
 Cache Startegy / Optimization: XINYU TO ADD (RAM vs Disk, pre-fetch, cache replacement approach)
 
 ### Evaluating Performance Optimization Effectiveness
-Getting our working environment setup (understanding and accessing the different servers) took a little longer than anticipated.  Also creating a well-formed DNS response took several tries to get working
+For DNS responses, we were able to manually verify that were mapping clients to the closest replica server.  For the beacon coming from Paris, we made sure our system mapped this to the Ireland Server.  For the Beacon coming from the Boston area, we made sure this was mapped to the N. Virginia server, etc.
+
+Using time wget, we evaluated effectiveness of IP Geolocation vs. randomly picking a replica server.  On average, the wget download for the same content in cache was faster for mapped to the closer server compared to random server selection (although this was informal sampling, see future improvements section for ideas around statistical tests)
+
+### Future Improvements (what we would do if we had more time)
+
+1) We would implement active measurement techniques to map clients to the best replica server. For all IP addresses we have seen before, we could ping the replica servers to see which responded the fasted.  We could continually run these pings and we would be able to map clients (that we have seen before) to the replica server likely to respond the fastest. 
+
+2) We would improve our ability to evaluate the effectiveness of our solution through automated simulation testing.  Through the automation, we could configure different versions of the CDN (IP Geolocation vs active measurement), and we could do statistical analysis on the performance metrics assess our solution.
 
 ### Code Breakdown
 
