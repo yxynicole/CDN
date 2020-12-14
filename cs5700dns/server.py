@@ -97,7 +97,7 @@ class UDPHandler(socketserver.BaseRequestHandler):
 
         domain_received = '.'.join(dns_packet.qname_arr)
 
-        replica_addr = resolver.resolve(domain_received, self.client_address)
+        replica_addr = resolver.resolve(domain_received, self.client_address[0])
         if replica_addr:
             print('domain matches -', domain_received, '- replica address -', replica_addr)
             sys.stdout.flush()
